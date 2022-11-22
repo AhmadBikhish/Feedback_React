@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
 import RatingSelect from "./RatingSelect";
 import Button from "./shared/Button";
@@ -12,7 +12,17 @@ const FeedbackForm = function(){
     const [btnDisabled, setBtnDisabled] = useState(true);
     const [message, setMessage] = useState('');
 
-    const {createFeedback} = useContext(FeedbackContext);
+    const { createFeedback, feedbackEdit, updateFeedback } = useContext(FeedbackContext);
+
+    useEffect(function(){
+
+        if(feedbackEdit.edit === true){
+            setBtnDisabled(false);
+            setText(feedbackEdit.feedback.text);
+            setRating(rating);
+        }
+
+    }, [feedbackEdit])
 
     const handleTextChange = e => {
         const value = e.target.value;
@@ -37,8 +47,11 @@ const FeedbackForm = function(){
         e.preventDefault();
 
         if(text.trim().length > 10){
+            console.log(rating);
             const newFeedback = { text, rating };
-            createFeedback(newFeedback);
+
+            if(feedbackEdit.edit) updateFeedback(feedbackEdit.feedback.id, newFeedback);
+            else createFeedback(newFeedback);
 
             setText('');    
         }
