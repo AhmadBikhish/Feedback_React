@@ -1,15 +1,18 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
 import RatingSelect from "./RatingSelect";
 import Button from "./shared/Button";
 import Card from "./shared/Card";
+import FeedbackContext from "../Context/FeedbackContext";
 
-const FeedbackForm = function({ handleCreate }){
+const FeedbackForm = function(){
 
     const [text, setText] = useState('');
     const [rating, setRating] = useState(10);
     const [btnDisabled, setBtnDisabled] = useState(true);
     const [message, setMessage] = useState('');
+
+    const {createFeedback} = useContext(FeedbackContext);
 
     const handleTextChange = e => {
         const value = e.target.value;
@@ -35,7 +38,7 @@ const FeedbackForm = function({ handleCreate }){
 
         if(text.trim().length > 10){
             const newFeedback = { text, rating };
-            handleCreate(newFeedback);
+            createFeedback(newFeedback);
 
             setText('');    
         }

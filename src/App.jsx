@@ -1,7 +1,5 @@
-import { useState } from "react";
-import FeedbackData from './data/FeedbackData';
-import { v4 as uuid } from 'uuid';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { FeedbackProvider } from './Context/FeedbackContext';
 
 //components
 import FeedbackList from "./Components/FeedbackList";
@@ -12,38 +10,26 @@ import AboutPage from "./Pages/AboutPage";
 import AboutIconLink from "./Components/AboutIconLink";
 
 const App = function(){
-    
-    const [feedback, setFeedback] = useState(FeedbackData);
-
-    const createFeedback = function(newFeedback){
-        newFeedback.id = uuid();
-        setFeedback([newFeedback, ...feedback]);
-    }
-
-    const deleteFeedback = function(id){
-        if(window.confirm('Are you share to delete this feedback?')){
-            setFeedback(feedback.filter(feedback => feedback.id !== id));
-        }
-    }
-    
     return (
         <BrowserRouter>
-            <Header />
-            <div className="container">
-                <Routes>
-                    <Route path="/" element={
-                        <>
-                            <FeedbackForm handleCreate={createFeedback} />
-                            <FeedbackStats feedback={feedback} />
-                            <FeedbackList feedback={feedback} handleDelete={deleteFeedback} />
-                            <AboutIconLink />
-                        </>
-                    } />
-                        
+            <FeedbackProvider>
+                <Header />
+                <div className="container">
+                    <Routes>
+                        <Route path="/" element={
+                            <>
+                                <FeedbackForm />
+                                <FeedbackStats />
+                                <FeedbackList />
+                                <AboutIconLink />
+                            </>
+                        } />
+                            
 
-                    <Route path="/about" element={<AboutPage />} />
-                </Routes>
-            </div>
+                        <Route path="/about" element={<AboutPage />} />
+                    </Routes>
+                </div>
+            </FeedbackProvider>
         </BrowserRouter>
     );
 }
